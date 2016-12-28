@@ -1,0 +1,20 @@
+version: '2'
+services:
+  log:
+    image: versus/micro-logger:latest
+    container_name: micro-logger
+    restart: always
+    volumes:
+      - ./log/:/var/log/docker/
+    ports:
+      - 1514:514
+  log-generator:
+    image: chentex/random-logger:latest
+    restart: always
+    depends_on:
+      - log
+    logging:
+      driver: "syslog"
+      options:
+        syslog-address: "tcp://127.0.0.1:1514"
+        tag: "log-generator"
